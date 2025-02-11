@@ -48,7 +48,12 @@ class SerialThread(QThread):
         Expected format:
         Accel X: -0.023928,Accel Y: 9.810574,Accel Z: 0.550349,Gyro X: -0.015882,Gyro Y: -0.070860,Gyro Z: -0.037874
         """
-        pattern = r'Accel X:\s*([-+]?\d*\.\d+|\d+),Accel Y:\s*([-+]?\d*\.\d+|\d+),Accel Z:\s*([-+]?\d*\.\d+|\d+),Gyro X:\s*([-+]?\d*\.\d+|\d+),Gyro Y:\s*([-+]?\d*\.\d+|\d+),Gyro Z:\s*([-+]?\d*\.\d+|\d+)'
+        pattern = (r'Accel X:\s*([-+]?\d*\.\d+|\d+),'
+                   r'Accel Y:\s*([-+]?\d*\.\d+|\d+),'
+                   r'Accel Z:\s*([-+]?\d*\.\d+|\d+),'
+                   r'Gyro X:\s*([-+]?\d*\.\d+|\d+),'
+                   r'Gyro Y:\s*([-+]?\d*\.\d+|\d+),'
+                   r'Gyro Z:\s*([-+]?\d*\.\d+|\d+)')
         match = re.match(pattern, line)
         if match:
             accel_x, accel_y, accel_z, gyro_x, gyro_y, gyro_z = map(float, match.groups())
@@ -143,33 +148,34 @@ class MainWindow(QtWidgets.QMainWindow):
         self.accel_z_label.setAlignment(Qt.AlignLeft)
         self.data_layout.addWidget(self.accel_z_label)
 
-        # Plots (Only Accelerometer Z-Axis)
+        # Data Buffers for Plotting (Only Accelerometer Z-Axis)
+        self.buffer_size = 100  # Number of points to display
+
+        # Plots (Only Accelerometer Z-Axis Over Time)
         pg.setConfigOptions(antialias=True)
 
-        # Accelerometer Z-Axis Plot
-        self.accel_z_plot = pg.PlotWidget(title="Accelerometer Z-Axis")
+        self.accel_z_plot = pg.PlotWidget(title="Accelerometer Z-Axis Over Time")
+        self.accel_z_plot.setBackground('w')  # Set background to white
         self.accel_z_plot.addLegend()
-        self.accel_z_plot.setLabel('left', 'Acceleration', units='m/s²')
-        self.accel_z_plot.setLabel('bottom', 'Samples')
-        self.accel_z_curve = self.accel_z_plot.plot(pen='b', name='Accel Z')
+        self.accel_z_plot.setLabel('left', 'Acceleration', units='m/s²', color='k')  # Set label color to black
+        self.accel_z_plot.setLabel('bottom', 'Time (s)', color='k')  # Set label color to black
+
+        # Customize Grid Lines
+        self.accel_z_plot.showGrid(x=True, y=True, alpha=0.3)
+        self.accel_z_plot.setXRange(0, 100, padding=0)  # Initial range; will adjust dynamically
+        self.accel_z_curve = self.accel_z_plot.plot(pen=pg.mkPen(color='b', width=2), name='Accel Z Over Time')  # Blue line
 
         self.plots_layout.addWidget(self.accel_z_plot)
 
-        # Data Buffers for Plotting (Only Accelerometer Z-Axis)
-        self.buffer_size = 100  # Number of points to display
-        self.accel_z_data = deque([0]*self.buffer_size, maxlen=self.buffer_size)
-
-        # Progress Bar
-        self.progress_bar = QtWidgets.QProgressBar()
-        self.progress_bar.setMinimum(0)
-        self.progress_bar.setMaximum(100)
-        self.progress_bar.setValue(0)
-        self.main_layout.addWidget(self.progress_bar)
+        # Buffer for time plot
+        self.time_data = deque([0], maxlen=1000)  # Adjust maxlen as needed
+        self.accel_z_time_data = deque([0], maxlen=1000)
 
         # Logging Setup
         self.log_file_handle = None
         self.log_writer = None
         self.current_frequency = None
+        self.start_time = None  # To track elapsed time
 
         # Connect Signals
         self.refresh_button.clicked.connect(self.refresh_ports)
@@ -224,11 +230,15 @@ class MainWindow(QtWidgets.QMainWindow):
         # Update Labels (Only Accelerometer Z-Axis)
         self.accel_z_label.setText(f"Accel Z: {data['accel_z']:.6f} m/s²")
 
-        # Update Plot Data (Only Accelerometer Z-Axis)
-        self.accel_z_data.append(data['accel_z'])
+        # Update Plot Data (Only Accelerometer Z-Axis Over Time)
+        if self.start_time is None:
+            self.start_time = QtCore.QTime.currentTime()
+        elapsed = self.start_time.msecsTo(QtCore.QTime.currentTime()) / 1000.0  # seconds
+        self.time_data.append(elapsed)
+        self.accel_z_time_data.append(data['accel_z'])
 
-        # Update Plot
-        self.accel_z_curve.setData(list(self.accel_z_data))
+        self.accel_z_curve.setData(list(self.time_data), list(self.accel_z_time_data))
+        self.accel_z_plot.setXRange(max(0, elapsed - 10), elapsed + 1)  # Show last 10 seconds
 
         # Logging
         if self.current_frequency is not None and self.log_writer is not None:
@@ -249,6 +259,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.log_file_handle = open('sensor_data_log.csv', 'w', newline='')
                 self.log_writer = csv.DictWriter(self.log_file_handle, fieldnames=['frequency', 'accel_z'])
                 self.log_writer.writeheader()
+                self.start_time = None  # Reset start time for time plot
+                self.time_data.clear()
+                self.accel_z_time_data.clear()
+                self.accel_z_curve.clear()
             except Exception as e:
                 QtWidgets.QMessageBox.critical(self, "Logging Error", f"Failed to open log file: {e}")
                 self.log_writer = None
@@ -256,12 +270,9 @@ class MainWindow(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.information(self, "Playback", "Playback is already running.")
 
     def update_frequency(self, freq):
-        """Update the current frequency being played and update progress."""
+        """Update the current frequency being played."""
         self.current_frequency = freq
-        # Update Progress Bar based on frequency sweep
-        # Assuming frequencies range from 20 to 330 in steps of 10 (total 32 steps)
-        progress = int(((freq - 20) / (330 - 20)) * 100)
-        self.progress_bar.setValue(progress)
+        # (Progress Bar removed, so no updates here)
 
     def playback_finished(self):
         """Handle the playback completion."""
@@ -275,9 +286,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log_file_handle = None
             self.log_writer = None
 
-        # Reset Progress Bar
-        self.progress_bar.setValue(100)
-
     def playback_error(self, error_message):
         """Handle playback errors."""
         QtWidgets.QMessageBox.critical(self, "Playback Error", error_message)
@@ -289,9 +297,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.log_file_handle.close()
             self.log_file_handle = None
             self.log_writer = None
-
-        # Reset Progress Bar
-        self.progress_bar.setValue(0)
 
     def closeEvent(self, event):
         """Handle the window close event to ensure all threads are stopped."""

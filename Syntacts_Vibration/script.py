@@ -1,7 +1,7 @@
 from syntacts import *
 from time import sleep
 
-channels = [1,0,5,2,4]
+channels = [0,1,2,3,4]
 
 s = Session()
 s.open()
