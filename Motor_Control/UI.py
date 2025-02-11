@@ -1,8 +1,9 @@
 import sys
 import serial
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton
+from PyQt5.QtGui import QFont
 
-SERIAL_PORT = 'COM6'  
+SERIAL_PORT = 'COM3'  
 BAUD_RATE = 9600
 
 class MotorControlUI(QWidget):
@@ -46,7 +47,10 @@ class MotorControlUI(QWidget):
 
 
 if __name__ == "__main__":
+    
     app = QApplication(sys.argv)
+    font = QFont("Arial", 12) 
+    app.setFont(font)
     window = MotorControlUI(SERIAL_PORT, BAUD_RATE)
     window.show()
     sys.exit(app.exec_())

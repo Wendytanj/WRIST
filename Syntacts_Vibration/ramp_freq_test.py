@@ -7,8 +7,6 @@ s = Session()
 s.open()
 num_channels = s.channel_count
 
-
-
 signal1 = Sine(20) * Envelope(0.75)
 signal2 = Sine(40) * Envelope(0.75)
 signal3 = Sine(60) * Envelope(0.75)

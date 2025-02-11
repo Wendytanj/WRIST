@@ -49,7 +49,7 @@ void loop() {
     }
   }
 
-  int motorSpeed = 255; 
+  int motorSpeed = 128; 
   analogWrite(PWM1, motorSpeed);
   analogWrite(PWM2, motorSpeed);
 }
