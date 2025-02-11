@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-data = np.loadtxt('12_9_T1.txt')
+data = np.loadtxt('data.txt')
 
 force = data[:, 0:3]   
 torque = data[:, 3:6]  
@@ -10,12 +10,14 @@ num_samples = data.shape[0]
 sampling_rate = 60  # Hz
 time = np.arange(num_samples) / sampling_rate  
 
-# Determine the indices corresponding to 0-10 seconds
-end_index = int(10 * sampling_rate) 
+start_index = int(33 * sampling_rate)
+end_index = int(34 * sampling_rate)
 
-# Calculate the baseline (mean over 0-10 seconds)
-baseline_force = np.mean(force[:end_index, :], axis=0)
-baseline_torque = np.mean(torque[:end_index, :], axis=0)
+# Calculate the baseline (mean over 33-34 seconds)
+baseline_force = np.mean(force[start_index:end_index, :], axis=0)
+baseline_torque = np.mean(torque[start_index:end_index, :], axis=0)
+
+print("Baseline force: ", baseline_force)
 
 # Subtract the baseline from all data
 adjusted_force = force - baseline_force
