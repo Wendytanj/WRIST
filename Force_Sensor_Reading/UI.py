@@ -139,7 +139,7 @@ def find_com_port():
     ports = list(serial.tools.list_ports.comports())
     if ports:
         # Optionally, filter ports by description if needed.
-        return ports[0].device
+        return "COM10"
     return None
 
 

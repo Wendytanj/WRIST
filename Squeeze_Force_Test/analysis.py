@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+#for didi: navigate to Fall24 Coursework
 data = np.loadtxt('data.txt')
 
 force = data[:, 0:3]   
@@ -38,7 +38,7 @@ plt.figure(figsize=(12, 6))
 plt.subplot(2, 1, 1)
 plt.plot(time, adjusted_force[:, 0], label='Force X (Adjusted)')
 plt.plot(time, adjusted_force[:, 1], label='Force Y (Adjusted)')
-plt.plot(time, adjusted_force[:, 2], label='Force Z (Adjusted)')
+plt.plot(time, -adjusted_force[:, 2], label='Force Z (Adjusted)') #Plotting the negative Z direction for HF
 plt.title('Adjusted Force Components Over Time')
 plt.xlabel('Time (s)')
 plt.ylabel('Force (Adjusted)')
