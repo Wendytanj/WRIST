@@ -12,7 +12,7 @@ from PyQt5.QtGui import QFont
 # -----------------------------
 # Configuration
 # -----------------------------
-SERIAL_PORT = 'COM3'
+SERIAL_PORT = 'COM9'
 BAUD_RATE = 9600
 
 # Define the channels for your LRAs
