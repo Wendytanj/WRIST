@@ -1,7 +1,6 @@
 from syntacts import *
 from time import sleep
 
-<<<<<<<< HEAD:Syntacts_Vibration/Syntacts_script_11_13.py
 """
 Custom pattern script for inter-team presentatoins on 11/13/2024.
 - Patterns include:
@@ -9,10 +8,7 @@ Custom pattern script for inter-team presentatoins on 11/13/2024.
     - All triggered vibration (sine wave at 170Hz)
 """
 channels = [1,0,4,5,3]
-========
 channels = [0,1,2,3,4]
->>>>>>>> 07b8b42b20c108887f160c5a23444d5005877c3b:Syntacts_Vibration/script.py
-
 
 s = Session()
 s.open()
