@@ -1,7 +1,14 @@
 from syntacts import *
 from time import sleep
 
+"""
+Custom pattern script for inter-team presentatoins on 11/13/2024.
+- Patterns include:
+    - individual sequential tactor triggering for different durations of time
+    - All triggered vibration (sine wave at 170Hz)
+"""
 channels = [1,0,4,5,3]
+
 
 s = Session()
 s.open()
@@ -30,7 +37,7 @@ max_duration = 1.0
 signal1 = Sine(170) * Envelope(0.75)
 
 sequence = Sequence()
-sequence << signal1
+sequence << signal1 << signal1
 
 for channel in channels:
     s.play(channel, sequence)
