@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-#for didi: navigate to Fall24 Coursework
-data = np.loadtxt('data.txt')
+
+data = np.loadtxt('/Data/data.txt')
 
 force = data[:, 0:3]   
 torque = data[:, 3:6]  
