@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-data = np.loadtxt('/Data/data.txt')
+data = np.loadtxt('Squeeze_Force_Test/Data/data.txt')
 
 force = data[:, 0:3]   
 torque = data[:, 3:6]  
