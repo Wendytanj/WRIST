@@ -1,4 +1,4 @@
-/*
+ /*
   Date: 5/2021 (Adapted for DA7281)
   Author: Elias Santistevan @ SparkFun Electronics
           Adapted by [Your Name]
@@ -15,6 +15,8 @@
 
 Haptic_Driver hapDrive;
 #define FORCE_ADDR       0x04 
+#define IN1 PA1  
+#define IN2 PA5  
 
 const uint8_t custom_waveform[] = {
   0x00, // 0%
@@ -37,6 +39,7 @@ const uint8_t custom_waveform[] = {
 const int waveform_length = sizeof(custom_waveform) / sizeof(custom_waveform[0]);
 
 void setup(){
+  // I2C
   Wire.begin();
   Serial.begin(115200);
 
@@ -55,9 +58,23 @@ void setup(){
   hapDrive.setOperationMode(DRO_MODE);
   Serial.println("Ready.");
   delay(1000);
+
+  // PWM
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
 }
 
 void loop(){
+  //Motor Spin Forward
+  int AMP = 50; //range (50-255) for noticable motor spin
+  
+  analogWrite(IN1, AMP); 
+  analogWrite(IN2, 0);
+
+  //analogWrite(IN1, 0); 
+ // analogWrite(IN2, AMP);
+  //delay(5000);
+
   // Stream the custom waveform
   for(int i = 0; i < waveform_length; i++){
     uint8_t amplitude = custom_waveform[i];
