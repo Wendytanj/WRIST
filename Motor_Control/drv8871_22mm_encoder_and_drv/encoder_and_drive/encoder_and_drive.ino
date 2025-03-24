@@ -22,12 +22,30 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(encoderPinA), encoderISR, CHANGE);
 
   // Start the motor spinning in one direction continuously
-  int AMP = 70; // Adjust speed as needed
-  analogWrite(IN1, AMP);
-  analogWrite(IN2, 0);
+
 }
 
 void loop() {
+  int AMP = 255; // Adjust speed as needed
+  //Controlling Motor
+  if (Serial.available() > 0) {
+    String command = Serial.readStringUntil('\n');
+    command.trim();
+    if (command == "L") {
+      // Turns counter clockwise
+      analogWrite(IN1, 0);
+      analogWrite(IN2, AMP);
+    } else if (command == "R") {
+      // Turns clockwise
+      analogWrite(IN1, AMP);
+      analogWrite(IN2, 0);
+    } else if (command == "X") {
+      // Stop motors
+      analogWrite(IN1, 0);
+      analogWrite(IN2, 0);
+    }
+  }
+
   // Safely read the encoder counter
   noInterrupts();
   long pos = encoderPos;
