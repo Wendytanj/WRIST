@@ -201,6 +201,7 @@ void parseCCommand(String cmd) {
 
 void setup() {
   Wire.begin();
+  Wire.setClock(1000000);
   Serial.begin(115200);
   
   // Pre-initialize all drivers.
