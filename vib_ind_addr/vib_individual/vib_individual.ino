@@ -2,46 +2,65 @@
 #include "Haptic_Driver.h"
 
 #define MAX_WAVE_SIZE 256
-#define MAX_ADDR 3
+#define NUM_DRIVERS 3
 
-// Global driver instance for commands
-Haptic_Driver hapDrive(0x48);
+// Pre-created global instances for each address
+Haptic_Driver hapDrive48(0x48);
+Haptic_Driver hapDrive49(0x49);
+Haptic_Driver hapDrive4A(0x4A);
 
-// Forward declarations
-void parseWCommand(String cmd);
-void parseCCommand(String cmd);
-void setHapticAddress(uint8_t addr);
-
-//----------------------------------
-// setHapticAddress
-//----------------------------------
-void setHapticAddress(uint8_t addr) {
-  hapDrive = Haptic_Driver(addr);
-  if (!hapDrive.begin()) {
-    Serial.print("Error: Could not communicate at addr 0x");
-    Serial.println(addr, HEX);
-    return;
-  }
-  if (!hapDrive.defaultMotor()) {
-    Serial.print("Error: Could not set default motor settings at addr 0x");
-    Serial.println(addr, HEX);
-    return;
-  }
-  hapDrive.enableFreqTrack(false);
-  hapDrive.setOperationMode(DRO_MODE);
+// Helper: returns a pointer to the appropriate driver instance based on address.
+Haptic_Driver* getDriver(uint8_t addr) {
+  if (addr == 0x48) return &hapDrive48;
+  else if (addr == 0x49) return &hapDrive49;
+  else if (addr == 0x4A) return &hapDrive4A;
+  else return NULL;
 }
 
-//----------------------------------
+// Initializes a single driver instance (for all three pre-created objects).
+void initDrivers() {
+  // Initialize driver at 0x48
+  if (!hapDrive48.begin()) {
+    Serial.println("Error: Could not communicate with driver 0x48");
+  } else {
+    if (!hapDrive48.defaultMotor())
+      Serial.println("Error: Could not set default settings on 0x48");
+    hapDrive48.enableFreqTrack(false);
+    hapDrive48.setOperationMode(DRO_MODE);
+  }
+  
+  // Initialize driver at 0x49
+  if (!hapDrive49.begin()) {
+    Serial.println("Error: Could not communicate with driver 0x49");
+  } else {
+    if (!hapDrive49.defaultMotor())
+      Serial.println("Error: Could not set default settings on 0x49");
+    hapDrive49.enableFreqTrack(false);
+    hapDrive49.setOperationMode(DRO_MODE);
+  }
+  
+  // Initialize driver at 0x4A
+  if (!hapDrive4A.begin()) {
+    Serial.println("Error: Could not communicate with driver 0x4A");
+  } else {
+    if (!hapDrive4A.defaultMotor())
+      Serial.println("Error: Could not set default settings on 0x4A");
+    hapDrive4A.enableFreqTrack(false);
+    hapDrive4A.setOperationMode(DRO_MODE);
+  }
+}
+
+//-------------------------------
 // parseWCommand
-//----------------------------------
-// Command format:
+//-------------------------------
+// New waveform command format: 
 // W <num_addr> <addr1> <addr2> ... <waveLen> <stepMs> <amp0> ... <ampN-1>
 void parseWCommand(String cmd) {
   const int MAX_TOKENS = 300;
   String tokens[MAX_TOKENS];
   int tokenCount = 0;
   
-  // Tokenize by spaces
+  // Tokenize the command by spaces.
   int startIndex = 0;
   while (startIndex < cmd.length()) {
     int spaceIndex = cmd.indexOf(' ', startIndex);
@@ -49,44 +68,41 @@ void parseWCommand(String cmd) {
       spaceIndex = cmd.length();
     String token = cmd.substring(startIndex, spaceIndex);
     token.trim();
-    if (token.length() > 0) {
+    if (token.length() > 0)
       tokens[tokenCount++] = token;
-    }
     startIndex = spaceIndex + 1;
     if (tokenCount >= MAX_TOKENS) break;
   }
   
   if (tokenCount < 6) {
-    Serial.println("Error: Command format incorrect");
+    Serial.println("Error: W command format incorrect");
     return;
   }
   
   int numAddr = tokens[1].toInt();
-  if (numAddr < 1 || numAddr > MAX_ADDR) {
+  if (numAddr < 1 || numAddr > NUM_DRIVERS) {
     Serial.println("Error: Invalid number of addresses");
     return;
   }
   
-  // Read addresses
-  uint8_t addrs[MAX_ADDR];
+  // Read addresses.
+  uint8_t addrs[NUM_DRIVERS];
   for (int i = 0; i < numAddr; i++) {
     String addrStr = tokens[2 + i];
+    addrStr.trim();
     if (addrStr.startsWith("0x") || addrStr.startsWith("0X"))
       addrStr = addrStr.substring(2);
     addrs[i] = (uint8_t)strtol(addrStr.c_str(), NULL, 16);
   }
   
-  int waveLenIndex = 2 + numAddr;
-  int waveLen = tokens[waveLenIndex].toInt();
+  int waveLen = tokens[2 + numAddr].toInt();
   if (waveLen > MAX_WAVE_SIZE) {
     Serial.println("Warning: waveLen exceeds buffer size, truncating.");
     waveLen = MAX_WAVE_SIZE;
   }
   
-  int stepMsIndex = 3 + numAddr;
-  int stepMs = tokens[stepMsIndex].toInt();
+  int stepMs = tokens[3 + numAddr].toInt();
   
-  // The remaining tokens are amplitude values
   int firstAmpIndex = 4 + numAddr;
   if (tokenCount < firstAmpIndex + waveLen) {
     Serial.println("Error: Not enough amplitude data in command.");
@@ -96,49 +112,40 @@ void parseWCommand(String cmd) {
   uint8_t waveData[MAX_WAVE_SIZE];
   for (int i = 0; i < waveLen; i++) {
     String ampStr = tokens[firstAmpIndex + i];
+    ampStr.trim();
     waveData[i] = (uint8_t)strtol(ampStr.c_str(), NULL, 16);
   }
   
-  // We'll record the last time we called setVibrate() for each address
-  unsigned long deviceTime[MAX_ADDR] = {0, 0, 0};
-  
-  // Start time for entire command
   unsigned long startTime = millis();
-  
-  // For each sample
+  // For each sample, update all selected drivers.
   for (int i = 0; i < waveLen; i++) {
-    // For each address
     for (int j = 0; j < numAddr; j++) {
-      setHapticAddress(addrs[j]);
-      hapDrive.setVibrate(waveData[i]);
-      deviceTime[j] = millis();  // record time right after setVibrate
+      Haptic_Driver* drv = getDriver(addrs[j]);
+      if (drv != NULL) {
+        drv->setVibrate(waveData[i]);
+      }
     }
     delay(stepMs);
   }
   
-  // Turn off all devices
+  // Turn off all drivers.
   for (int j = 0; j < numAddr; j++) {
-    setHapticAddress(addrs[j]);
-    hapDrive.setVibrate(0);
+    Haptic_Driver* drv = getDriver(addrs[j]);
+    if (drv != NULL) {
+      drv->setVibrate(0);
+    }
   }
   
-  unsigned long endTime = millis();
-  unsigned long diff = endTime - startTime;
-  
-  // Print "DONE <time0> <time1> <time2> <diff>"
-  // If numAddr < 3, some times might remain 0.
+  unsigned long diff = millis() - startTime;
   Serial.print("DONE ");
-  for (int j = 0; j < numAddr; j++) {
-    Serial.print(deviceTime[j]);
-    Serial.print(" ");
-  }
   Serial.println(diff);
 }
 
-//----------------------------------
+//-------------------------------
 // parseCCommand
-//----------------------------------
-// Format: C <num_addr> <addr1> <addr2> ... <amp>
+//-------------------------------
+// New constant buzz command format: 
+// C <num_addr> <addr1> <addr2> ... <amp>
 void parseCCommand(String cmd) {
   const int MAX_TOKENS = 10;
   String tokens[MAX_TOKENS];
@@ -151,9 +158,8 @@ void parseCCommand(String cmd) {
       spaceIndex = cmd.length();
     String token = cmd.substring(startIndex, spaceIndex);
     token.trim();
-    if (token.length() > 0) {
+    if (token.length() > 0)
       tokens[tokenCount++] = token;
-    }
     startIndex = spaceIndex + 1;
     if (tokenCount >= MAX_TOKENS) break;
   }
@@ -164,7 +170,7 @@ void parseCCommand(String cmd) {
   }
   
   int numAddr = tokens[1].toInt();
-  if (numAddr < 1 || numAddr > MAX_ADDR) {
+  if (numAddr < 1 || numAddr > NUM_DRIVERS) {
     Serial.println("Error: Invalid number of addresses.");
     return;
   }
@@ -177,50 +183,30 @@ void parseCCommand(String cmd) {
   int amplitude = tokens[2 + numAddr].toInt();
   
   unsigned long startTime = millis();
-  
-  // Optionally record times for each address if you want
-  unsigned long deviceTime[MAX_ADDR] = {0, 0, 0};
-  
   for (int i = 0; i < numAddr; i++) {
     String addrStr = tokens[2 + i];
+    addrStr.trim();
     if (addrStr.startsWith("0x") || addrStr.startsWith("0X"))
       addrStr = addrStr.substring(2);
     int addr = strtol(addrStr.c_str(), NULL, 16);
-    setHapticAddress((uint8_t)addr);
-    hapDrive.setVibrate((uint8_t)amplitude);
-    deviceTime[i] = millis();
+    Haptic_Driver* drv = getDriver(addr);
+    if (drv != NULL) {
+      drv->setVibrate((uint8_t)amplitude);
+    }
   }
-  
-  unsigned long endTime = millis();
-  unsigned long diff = endTime - startTime;
-  
-  // Print "DONE <time0> <time1> <time2> <diff>"
+  unsigned long diff = millis() - startTime;
   Serial.print("DONE ");
-  for (int i = 0; i < numAddr; i++) {
-    Serial.print(deviceTime[i]-startTime);
-    Serial.print(" ");
-  }
   Serial.println(diff);
 }
 
-//----------------------------------
-// setup, loop
-//----------------------------------
 void setup() {
   Wire.begin();
   Serial.begin(115200);
   
-  if (!hapDrive.begin()) {
-    Serial.println("Could not communicate with default Haptic Driver at 0x48.");
-  } else {
-    Serial.println("Found DA7281 at 0x48!");
-    if (!hapDrive.defaultMotor()) {
-      Serial.println("Could not set default settings on default address.");
-    }
-    hapDrive.enableFreqTrack(false);
-    hapDrive.setOperationMode(DRO_MODE);
-    Serial.println("Ready. Waiting for commands...");
-  }
+  // Pre-initialize all drivers.
+  initDrivers();
+  
+  Serial.println("Ready. Waiting for commands...");
   delay(500);
 }
 
