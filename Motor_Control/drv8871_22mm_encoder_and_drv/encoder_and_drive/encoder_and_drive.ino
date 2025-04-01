@@ -20,6 +20,7 @@ void setup() {
 }
 
 void loop() {
+
   // Handle serial input
   if (Serial.available() > 0) {
     String command = Serial.readStringUntil('\n');
@@ -29,20 +30,41 @@ void loop() {
       analogWrite(IN1, 0);
       analogWrite(IN2, 0);
     } 
+    else if (command.startsWith("S")) {
+    int newAmp = command.substring(1).toInt();
+    if (newAmp >= 70 && newAmp <= 255) {
+    AMP = newAmp;
+    //Serial.print("Speed set to: ");
+    //Serial.println(AMP);
+    } 
+    //else {
+    //Serial.println("Invalid speed. Must be between 70 and 255.");
+    //}
+    }
     else if (command == "R") {
+      // counter clockwise
       analogWrite(IN1, AMP);
       analogWrite(IN2, 0);
     } 
-    else if (command.startsWith("T")) {
+    else if (command == "L") {
+      //clockwise
+      analogWrite(IN1, 0);
+      analogWrite(IN2, AMP);
+    } 
+    else if (command.startsWith("A")) {
       targetAngle = command.substring(1).toFloat();
-      Serial.print("Target Angle: ");
-      Serial.println(targetAngle);
+      //Serial.print("Target Angle: ");
+      //Serial.println(targetAngle);
       rotateAngle(targetAngle, true);
+    }
+    else if (command.startsWith("B")) {
+      targetAngle = command.substring(1).toFloat();
+      //Serial.print("Target Angle: ");
+      //Serial.println(targetAngle);
+      rotateAngle(targetAngle, false);
     }
   }
 
-  // Optional debug
-  /*
   noInterrupts();
   long pos = encoderPos;
   interrupts();
@@ -51,14 +73,10 @@ void loop() {
   while (angle < 0) angle += 360;
   while (angle >= 360) angle -= 360;
 
-  Serial.print("Encoder Count: ");
-  Serial.print(pos);
-  Serial.print("  Angle: ");
-  Serial.print(angle);
-  Serial.println("°");
+  //Serial.print(encoderPos);
+  //Serial.print(",");
+  //Serial.println(angle);
 
-  delay(500);
-  */
 }
 
 void rotateAngle(float targetAngle, bool clockwise) {
@@ -84,7 +102,7 @@ void rotateAngle(float targetAngle, bool clockwise) {
     if (error <= 0) {
       analogWrite(IN1, 255);
       analogWrite(IN2, 255);
-      Serial.println("Target reached.");
+      //Serial.println("Target reached.");
       break;
     }
 
@@ -100,12 +118,12 @@ void rotateAngle(float targetAngle, bool clockwise) {
       analogWrite(IN2, 0);
     }
 
-    Serial.print("Delta: ");
-    Serial.print(delta);
-    Serial.print("  Error: ");
-    Serial.print(error);
-    Serial.print("  Speed: ");
-    Serial.println(speed);
+    //Serial.print("Delta: ");
+    //Serial.print(delta);
+    //Serial.print("  Error: ");
+    //Serial.print(error);
+    //Serial.print("  Speed: ");
+    //Serial.println(speed);
   }
 }
 
