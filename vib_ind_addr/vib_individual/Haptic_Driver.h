@@ -179,7 +179,6 @@ class Haptic_Driver
     uint8_t getOperationMode();
 
     bool defaultMotor();
-    bool setMotor(hapticSettings userSettings);
     hapticSettings getSettings();
     bool setActuatorABSVolt(float);
     float getActuatorABSVolt();
@@ -191,34 +190,21 @@ class Haptic_Driver
     uint16_t getActuatorImpedance();
     uint16_t readImpAdjus();
     bool setActuatorLRAfreq(float);
-    bool enableCoinERM();
     bool enableAcceleration(bool);
     bool enableRapidStop(bool);
-    bool enableAmpPid(bool);
     bool enableFreqTrack(bool);
     bool setBemfFaultLimit(bool);
-    bool enableV2iFactorFreeze(bool);
     bool calibrateImpedanceDistance(bool);
     bool setVibrate(uint8_t);
     uint8_t getVibrate();
-    float getFullBrake();
     bool setMask(uint8_t);
     uint8_t getMask();
-    bool setFullBrake(uint8_t);
     bool setBemf(uint8_t val);
     float getBemf();
-    void createHeader(uint8_t, uint8_t);
     void clearIrq(uint8_t);
-    bool addSnippet(uint8_t ramp = RAMP, uint8_t amplitude = 2, uint8_t timeBase = 2);
-    bool addSnippet(uint8_t snippets[], uint8_t);
-    void eraseWaveformMemory(uint8_t);
     event_t getIrqEvent();
     diag_status_t getEventDiag();
     status_t getIrqStatus();
-    bool playFromMemory(bool enable = true);
-    bool setSeqControl(uint8_t, uint8_t);
-    uint8_t addFrame(uint8_t, uint8_t, uint8_t);
-
     hapticSettings sparkSettings;
 
   private:
@@ -248,9 +234,6 @@ class Haptic_Driver
     // This generic function does a basic I-squared-C write transaction at the
     // given address, and writes the given _command argument.
     void _writeCommand(uint8_t);
-
-    bool _writeWaveFormMemory(uint8_t waveFormArray[]);
-
     // This generic function reads an eight bit register. It takes the register's
     // address as its' parameter.
     uint8_t _readRegister(uint8_t);
