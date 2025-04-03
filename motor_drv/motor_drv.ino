@@ -1,7 +1,7 @@
 // DRV7781 Motor Driver Control 
 
-#define IN1 PA1  
-#define IN2 PA5  
+#define IN1 PA14 //D6  
+#define IN2 PA4 //D5
 
 void setup() {
   Serial.begin(9600);
@@ -12,7 +12,7 @@ void setup() {
 }
 
 void loop() {
-  int AMP = 50; //range (50-255) for noticable motor spin
+  int AMP = 70; //range (50-255) for noticable motor spin
   
   analogWrite(IN1, AMP); 
   analogWrite(IN2, 0);

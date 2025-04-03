@@ -1,0 +1,11 @@
+../USBPD/App/usbpd_dpm_core.c:112:21:USBPD_DPM_InitCore	5
+../USBPD/App/usbpd_dpm_core.c:210:21:USBPD_DPM_InitOS	7
+../USBPD/App/usbpd_dpm_core.c:250:6:USBPD_DPM_Run	1
+../USBPD/App/usbpd_dpm_core.c:259:6:USBPD_DPM_TimerCounter	2
+../USBPD/App/usbpd_dpm_core.c:284:13:USBPD_PE_TaskWakeUp	1
+../USBPD/App/usbpd_dpm_core.c:293:13:USBPD_DPM_CADTaskWakeUp	1
+../USBPD/App/usbpd_dpm_core.c:303:1:USBPD_PE_Task	2
+../USBPD/App/usbpd_dpm_core.c:332:1:USBPD_CAD_Task	1
+../USBPD/App/usbpd_dpm_core.c:352:6:USBPD_DPM_CADCallback	9
+../USBPD/App/usbpd_dpm_core.c:416:13:DPM_StartPETask	2
+../USBPD/App/usbpd_dpm_core.c:439:13:USBPD_DPM_ErrorHandler	1

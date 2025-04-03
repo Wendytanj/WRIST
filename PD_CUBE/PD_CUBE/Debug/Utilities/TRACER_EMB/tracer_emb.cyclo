@@ -1,0 +1,16 @@
+../Utilities/TRACER_EMB/tracer_emb.c:134:6:TRACER_EMB_Init	1
+../Utilities/TRACER_EMB/tracer_emb.c:146:6:TRACER_EMB_Add	5
+../Utilities/TRACER_EMB/tracer_emb.c:172:6:TRACER_EMB_IRQHandlerDMA	1
+../Utilities/TRACER_EMB/tracer_emb.c:178:6:TRACER_EMB_IRQHandlerUSART	1
+../Utilities/TRACER_EMB/tracer_emb.c:183:6:TRACER_EMB_WriteData	1
+../Utilities/TRACER_EMB/tracer_emb.c:188:6:TRACER_EMB_StartRX	1
+../Utilities/TRACER_EMB/tracer_emb.c:194:9:TRACER_EMB_EnableOverFlow	2
+../Utilities/TRACER_EMB/tracer_emb.c:205:9:TRACER_EMB_ReadData	1
+../Utilities/TRACER_EMB/tracer_emb.c:224:6:TRACER_EMB_CALLBACK_TX	4
+../Utilities/TRACER_EMB/tracer_emb.c:250:6:TRACER_EMB_Lock	1
+../Utilities/TRACER_EMB/tracer_emb.c:262:6:TRACER_EMB_UnLock	1
+../Utilities/TRACER_EMB/tracer_emb.c:275:6:TRACER_EMB_SendData	6
+../Utilities/TRACER_EMB/tracer_emb.c:328:9:TRACER_EMB_AllocateBufer	6
+../Utilities/TRACER_EMB/tracer_emb.c:373:13:TRACER_EMB_LowPowerInit	1
+../Utilities/TRACER_EMB/tracer_emb.c:377:13:TRACER_EMB_LowPowerSendData	1
+../Utilities/TRACER_EMB/tracer_emb.c:381:13:TRACER_EMB_LowPowerSendDataComplete	1
