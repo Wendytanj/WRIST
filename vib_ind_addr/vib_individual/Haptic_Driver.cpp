@@ -344,29 +344,10 @@ bool Haptic_Driver::calibrateImpedanceDistance(bool enable)
 // which limits the maximum value that can be written to the register.
 bool Haptic_Driver::setVibrate(uint8_t val)
 {
+    if (val > 0xFF)
+        val = 0xFF; // Just limit the argument to the physical limit
 
-    if (val < 0)
-        return false;
-
-    uint8_t accelState = _readRegister(TOP_CFG1);
-    accelState &= 0x04;
-    accelState = accelState >> 2;
-
-    if (accelState == ENABLE)
-    {
-        if (val > 0x7F)
-            val = 0x7F; // Just limit the argument to the physical limit
-    }
-    else
-    {
-        if (val > 0xFF)
-            val = 0xFF; // Just limit the argument to the physical limit
-    }
-
-    if (_writeRegister(TOP_CTL2, 0x00, val, 0))
-        return true;
-    else
-        return false;
+    return _writeRegister(TOP_CTL2, 0x00, val, 0);
 }
 
 // Address: 0x23, bit[7:0]
