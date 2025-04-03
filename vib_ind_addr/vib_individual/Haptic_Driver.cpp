@@ -115,19 +115,6 @@ hapticSettings Haptic_Driver::getSettings()
     return temp;
 }
 
-// This function takes a hapticSettings type and calls the respective function
-// to set the various motor characteristics.
-bool Haptic_Driver::setMotor(hapticSettings userSettings)
-{
-
-    if (setActuatorType(userSettings.motorType) && setActuatorABSVolt(userSettings.absVolt) &&
-        setActuatorNOMVolt(userSettings.nomVolt) && setActuatorIMAX(userSettings.currMax) &&
-        setActuatorImpedance(userSettings.impedance) && setActuatorLRAfreq(userSettings.lraFreq))
-        return true;
-    else
-        return false;
-}
-
 // Address: 0x0D , bit[7:0]: default value is: 0x78 (2.808 Volts)
 // Function takes the absolute maximum voltage of the motor intended to
 // be paired with the motor driver IC. Argument is of float type, and in volts.
@@ -294,18 +281,6 @@ uint16_t Haptic_Driver::readImpAdjus()
     return totalImp;
 }
 
-// This function sets the various settings that allow for ERM vibration motor
-// operation by calling the relevant individual functions.
-bool Haptic_Driver::enableCoinERM()
-{
-
-    if (enableAcceleration(false) && enableRapidStop(false) && enableAmpPid(false) && enableV2iFactorFreeze(true) &&
-        calibrateImpedanceDistance(true) && setBemfFaultLimit(true))
-        return true;
-    else
-        return false;
-}
-
 // Address: 0x13, bit[2]: default value is 0x1
 // Enables or disables active acceleration.
 bool Haptic_Driver::enableAcceleration(bool enable)
@@ -328,16 +303,6 @@ bool Haptic_Driver::enableRapidStop(bool enable)
         return false;
 }
 
-// Address: 0x13, bit[0]: default value is 0x0
-// Enables or disables the "amplitude PID" technology.
-bool Haptic_Driver::enableAmpPid(bool enable)
-{
-
-    if (_writeRegister(TOP_CFG1, 0xFE, enable, 0))
-        return true;
-    else
-        return false;
-}
 
 // Address: 0x13, bit[0]: default value is 0x0
 // Enables or disables the "frequency tracking" technology.
@@ -357,18 +322,6 @@ bool Haptic_Driver::setBemfFaultLimit(bool enable)
 {
 
     if (_writeRegister(TOP_CFG1, 0xEF, enable, 4))
-        return true;
-    else
-        return false;
-}
-
-// Address: 0x16, bit[7]: default value is 0x0
-// Enables or disables internal loop computations, which should only be
-// disabled when using custom waveform or wideband operation.
-bool Haptic_Driver::enableV2iFactorFreeze(bool enable)
-{
-
-    if (_writeRegister(TOP_CFG4, 0x7F, enable, 7))
         return true;
     else
         return false;
@@ -427,25 +380,6 @@ uint8_t Haptic_Driver::getVibrate()
     return vibVal;
 }
 
-float Haptic_Driver::getFullBrake()
-{
-
-    uint8_t tempThresh = _readRegister(TOP_CFG2);
-    return (tempThresh & 0x0F) * 6.66;
-}
-
-bool Haptic_Driver::setFullBrake(uint8_t thresh)
-{
-
-    if (thresh < 0 || thresh > 15)
-        return false;
-
-    if (_writeRegister(TOP_CFG2, 0xF0, thresh, 0))
-        return true;
-    else
-        return false;
-}
-
 // Address: 0x07, bit[7:0]: default value is: 0x0
 // Function sets the register to ignore the given "mask" i.e. irq event.
 bool Haptic_Driver::setMask(uint8_t mask)
@@ -501,98 +435,13 @@ float Haptic_Driver::getBemf()
     }
 }
 
-void Haptic_Driver::createHeader(uint8_t numSnippets, uint8_t numSequences)
-{
-}
-
 void Haptic_Driver::clearIrq(uint8_t irq)
 {
     _writeRegister(IRQ_EVENT1, ~irq, irq, 0);
 }
 
-bool Haptic_Driver::addSnippet(uint8_t ramp, uint8_t timeBase, uint8_t amplitude)
-{
 
-    if (ramp < 0 | ramp > 1)
-        return false;
 
-    if (amplitude < 0 | amplitude > 15)
-        return false;
-
-    if (timeBase < 0 | timeBase > 7)
-        return false;
-
-    setOperationMode(INACTIVE);
-
-    if ((_readRegister(MEM_CTL2) >> 7) == LOCKED)
-        _writeRegister(MEM_CTL2, 0x7F, UNLOCKED, 7);
-
-    uint8_t pwlVal = (ramp << 7) | (timeBase << 4) | (amplitude << 0);
-    uint8_t snipAddrLoc = _readRegister(MEM_CTL1);
-
-    snpMemCopy[NUM_SNIPPETS] = snpMemCopy[NUM_SNIPPETS] + 1;   // Number of Snippets
-    snpMemCopy[NUM_SEQUENCES] = snpMemCopy[NUM_SEQUENCES] + 1; // Number of sequences
-
-    uint8_t frameByte = addFrame(0, 3, 1);
-
-    for (uint8_t i = 0; i < snpMemCopy[NUM_SNIPPETS]; i++)
-    {
-        snpMemCopy[SNP_ENDPOINTERS + i] = SNP_ENDPOINTERS_REGS + i; // snippet endpointer
-        lastPosWritten = SNP_ENDPOINTERS + i;
-    }
-
-    lastPosWritten = lastPosWritten + 1;
-
-    for (uint8_t i = 0; i < snpMemCopy[NUM_SEQUENCES]; i++)
-    {
-        snpMemCopy[lastPosWritten] = SNP_ENDPOINTERS_REGS + snpMemCopy[NUM_SNIPPETS] + i; // sequence endpointer
-        lastPosWritten = SNP_ENDPOINTERS + snpMemCopy[NUM_SNIPPETS] + i;
-    }
-
-    lastPosWritten = lastPosWritten + 1;
-    snpMemCopy[lastPosWritten] = pwlVal; // Write snippet
-    lastPosWritten = lastPosWritten + 1;
-    snpMemCopy[lastPosWritten] = frameByte;
-
-    setSeqControl(1, 0);
-
-    if (_writeWaveFormMemory(snpMemCopy))
-        return true;
-    else
-        return false;
-}
-
-bool Haptic_Driver::addSnippet(uint8_t snippets[], uint8_t numOfSnippets)
-{
-    return true;
-}
-
-uint8_t Haptic_Driver::addFrame(uint8_t gain, uint8_t timeBase, uint8_t snipIdLow)
-{
-
-    uint8_t commandByteZero = 0; // Command byte zero is mandatory, snip-id begins at one
-    commandByteZero = (gain << 5) | (timeBase << 3) | (snipIdLow << 0);
-    return commandByteZero;
-}
-
-bool Haptic_Driver::playFromMemory(bool enable)
-{
-
-    if (_writeRegister(TOP_CTL1, 0xEF, enable, 4))
-        return true;
-    else
-        return false;
-}
-
-void Haptic_Driver::eraseWaveformMemory(uint8_t mode)
-{
-
-    for (uint8_t i; i = BEGIN_SNP_MEM; i < TOTAL_MEM_REGISTERS)
-    {
-        snpMemCopy[i] = 0;
-    }
-    _writeWaveFormMemory(snpMemCopy);
-}
 
 // Address: 0x03, bit[7:0]
 // This retrieves the interrupt value and returns the corresponding interrupt
@@ -679,20 +528,6 @@ status_t Haptic_Driver::getIrqStatus()
     }
 }
 
-bool Haptic_Driver::setSeqControl(uint8_t repetitions, uint8_t sequenceID)
-{
-
-    if (sequenceID < 0 | sequenceID > 15)
-        return false;
-
-    if (repetitions < 0 | repetitions > 15)
-        return false;
-
-    if (_writeRegister(SEQ_CTL2, 0xF0, sequenceID, 0) && _writeRegister(SEQ_CTL2, 0x0F, repetitions, 4))
-        return true;
-    else
-        return false;
-}
 
 // This generic function handles I2C write commands for modifying individual
 // bits in an eight bit register. Paramaters include the register's address, a mask
@@ -768,22 +603,6 @@ bool Haptic_Driver::_writeNonConsReg(uint8_t regs[], size_t numWrites)
         // Here's to hoping that the register pointer will indeed jump locations as
         // advertised.
         _i2cPort->write(regs[i]);
-    }
-
-    if (!_i2cPort->endTransmission())
-        return true;
-    else
-        return false;
-}
-
-bool Haptic_Driver::_writeWaveFormMemory(uint8_t waveFormArray[])
-{
-
-    _i2cPort->beginTransmission(_address); // Start communication.
-    _i2cPort->write(NUM_SNIPPETS_REG);     // Moves pointer to register.
-    for (size_t i = BEGIN_SNP_MEM; i < TOTAL_MEM_REGISTERS; i++)
-    {
-        _i2cPort->write(waveFormArray[i]);
     }
 
     if (!_i2cPort->endTransmission())

@@ -1,0 +1,7 @@
+Control coefficient getting from the speed
+
+When the command it sent to the MCU, the MCU will keep tighting the device till it found that each rotation takes 5 times as much time as the first rotation (at the motor end not the spool end). Then it will back up to a place where it take 2 times as much time required as the first rotation.
+It also can back up to the first rotation to allow user take it off!
+
+AS FOR 4/3
+Still need a base model, we will need to setup a base and we could add a user defined scale for the squeeze!!!
