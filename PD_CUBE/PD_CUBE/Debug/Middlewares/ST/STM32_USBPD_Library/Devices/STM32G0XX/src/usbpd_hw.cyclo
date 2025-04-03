@@ -1,0 +1,8 @@
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_bus.h:250:22:LL_AHB1_GRP1_EnableClock	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_hw.c:29:15:USBPD_HW_GetUSPDInstance	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_hw.c:38:22:USBPD_HW_Init_DMARxInstance	2
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_hw.c:88:6:USBPD_HW_DeInit_DMARxInstance	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_hw.c:93:22:USBPD_HW_Init_DMATxInstance	2
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_hw.c:139:6:USBPD_HW_DeInit_DMATxInstance	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_hw.c:144:10:USBPD_HW_GetRpResistorValue	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_hw.c:150:6:USBPD_HW_SetFRSSignalling	1

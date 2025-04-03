@@ -1,0 +1,17 @@
+../Drivers/CMSIS/Include/core_cm0plus.h:741:22:__NVIC_EnableIRQ	2
+../Drivers/CMSIS/Include/core_cm0plus.h:850:22:__NVIC_SetPriority	2
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:346:22:LL_UCPD_Enable	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:390:22:LL_UCPD_SetRxOrderSet	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:643:22:LL_UCPD_SetccEnable	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:811:22:LL_UCPD_EnableIT_TypeCEventCC2	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:822:22:LL_UCPD_EnableIT_TypeCEventCC1	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_cad_hw_if.c:238:6:CAD_Init	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_cad_hw_if.c:376:6:CAD_Enter_ErrorRecovery	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_cad_hw_if.c:393:10:CAD_SRC_Set_ResistorRp	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_cad_hw_if.c:405:10:CAD_Set_ResistorRp	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_cad_hw_if.c:421:10:CAD_StateMachine_SNK	5
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_cad_hw_if.c:923:10:CAD_StateMachine	10
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_cad_hw_if.c:1148:6:CAD_Check_HW_SNK	5
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_cad_hw_if.c:1271:17:ManageStateDetached_SNK	3
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_cad_hw_if.c:1647:17:ManageStateAttachedWait_SNK	6
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_cad_hw_if.c:1697:17:ManageStateAttached_SNK	4

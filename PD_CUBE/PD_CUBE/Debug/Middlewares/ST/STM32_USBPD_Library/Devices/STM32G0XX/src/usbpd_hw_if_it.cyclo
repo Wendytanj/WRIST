@@ -1,0 +1,15 @@
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1314:22:LL_UCPD_ClearFlag_TypeCEventCC2	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1325:22:LL_UCPD_ClearFlag_TypeCEventCC1	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1336:22:LL_UCPD_ClearFlag_RxMsgEnd	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1347:22:LL_UCPD_ClearFlag_RxOvr	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1358:22:LL_UCPD_ClearFlag_RxHRST	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1369:22:LL_UCPD_ClearFlag_RxOrderSet	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1380:22:LL_UCPD_ClearFlag_TxUND	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1391:22:LL_UCPD_ClearFlag_TxHRSTSENT	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1402:22:LL_UCPD_ClearFlag_TxHRSTDISC	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1413:22:LL_UCPD_ClearFlag_TxMSGABT	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1424:22:LL_UCPD_ClearFlag_TxMSGSENT	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_ucpd.h:1435:22:LL_UCPD_ClearFlag_TxMSGDISC	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_hw_if_it.c:39:6:USBPD_PORT0_IRQHandler	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_hw_if_it.c:44:6:USBPD_PORT1_IRQHandler	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_hw_if_it.c:49:6:PORTx_IRQHandler	21

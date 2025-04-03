@@ -1,0 +1,11 @@
+../USBPD/App/usbpd_dpm_core.c:112:21:USBPD_DPM_InitCore	24	static
+../USBPD/App/usbpd_dpm_core.c:210:21:USBPD_DPM_InitOS	80	static
+../USBPD/App/usbpd_dpm_core.c:250:6:USBPD_DPM_Run	8	static
+../USBPD/App/usbpd_dpm_core.c:259:6:USBPD_DPM_TimerCounter	8	static
+../USBPD/App/usbpd_dpm_core.c:284:13:USBPD_PE_TaskWakeUp	16	static
+../USBPD/App/usbpd_dpm_core.c:293:13:USBPD_DPM_CADTaskWakeUp	8	static
+../USBPD/App/usbpd_dpm_core.c:303:1:USBPD_PE_Task	48	static
+../USBPD/App/usbpd_dpm_core.c:332:1:USBPD_CAD_Task	40	static
+../USBPD/App/usbpd_dpm_core.c:352:6:USBPD_DPM_CADCallback	32	static
+../USBPD/App/usbpd_dpm_core.c:416:13:DPM_StartPETask	16	static
+../USBPD/App/usbpd_dpm_core.c:439:13:USBPD_DPM_ErrorHandler	8	static

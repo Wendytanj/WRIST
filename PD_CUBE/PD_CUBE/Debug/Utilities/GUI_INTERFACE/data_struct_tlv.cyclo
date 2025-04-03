@@ -1,0 +1,9 @@
+../Utilities/GUI_INTERFACE/data_struct_tlv.c:36:9:TLV_init_encode	3
+../Utilities/GUI_INTERFACE/data_struct_tlv.c:84:10:TLV_add	6
+../Utilities/GUI_INTERFACE/data_struct_tlv.c:138:10:TLV_addValue	6
+../Utilities/GUI_INTERFACE/data_struct_tlv.c:183:6:TLV_UpdateSizeTag	1
+../Utilities/GUI_INTERFACE/data_struct_tlv.c:197:6:TLV_deinit_encode	1
+../Utilities/GUI_INTERFACE/data_struct_tlv.c:212:9:TLV_init_decode	6
+../Utilities/GUI_INTERFACE/data_struct_tlv.c:245:9:TLV_get	4
+../Utilities/GUI_INTERFACE/data_struct_tlv.c:284:6:TLV_deinit_decode	1
+../Utilities/GUI_INTERFACE/data_struct_tlv.c:297:10:TLV_get_string_length	2

@@ -1,0 +1,3 @@
+../Middlewares/ST/STM32_USBPD_Library/Core/src/usbpd_trace.c:94:6:USBPD_TRACE_Init	1
+../Middlewares/ST/STM32_USBPD_Library/Core/src/usbpd_trace.c:124:6:USBPD_TRACE_DeInit	1
+../Middlewares/ST/STM32_USBPD_Library/Core/src/usbpd_trace.c:130:7:USBPD_TRACE_Add	5

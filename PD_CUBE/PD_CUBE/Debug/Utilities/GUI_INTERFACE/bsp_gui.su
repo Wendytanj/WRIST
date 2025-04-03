@@ -1,0 +1,7 @@
+../Utilities/GUI_INTERFACE/bsp_gui.c:62:19:BSP_GUI_LoadDataFromFlash	32	static
+../Utilities/GUI_INTERFACE/bsp_gui.c:198:19:BSP_GUI_EraseDataInFlash	32	static,ignoring_inline_asm
+../Utilities/GUI_INTERFACE/bsp_gui.c:257:19:BSP_GUI_SaveDataInFlash	120	static,ignoring_inline_asm
+../Utilities/GUI_INTERFACE/bsp_gui.c:438:26:SavePDOInFlash	80	static
+../Utilities/GUI_INTERFACE/bsp_gui.c:526:26:SaveSettingsInFlash	88	static
+../Utilities/GUI_INTERFACE/bsp_gui.c:630:26:LoadPDOFromFlash	32	static
+../Utilities/GUI_INTERFACE/bsp_gui.c:649:26:LoadSettingsFromFlash	40	static

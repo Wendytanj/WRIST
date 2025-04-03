@@ -1,0 +1,3 @@
+../USBPD/App/usbpd.c:42:6:MX_USBPD_Init	4
+../USBPD/App/usbpd.c:82:23:BSP_GetBoardName	1
+../USBPD/App/usbpd.c:91:23:BSP_GetBoardID	1

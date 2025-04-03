@@ -1,0 +1,16 @@
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:115:21:USBPD_PHY_Init	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:143:10:USBPD_PHY_GetRetryTimerValue	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:155:10:USBPD_PHY_GetMinGOODCRCTimerValue	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:165:6:USBPD_PHY_Reset	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:178:21:USBPD_PHY_ResetRequest	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:192:21:USBPD_PHY_SendMessage	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:203:21:USBPD_PHY_Send_BIST_Pattern	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:216:21:USBPD_PHY_ExitTransmit	2
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:231:6:USBPD_PHY_SetResistor_SinkTxNG	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:242:6:USBPD_PHY_SetResistor_SinkTxOK	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:253:6:USBPD_PHY_SOPSupported	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:264:9:USBPD_PHY_IsResistor_SinkTxOk	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:274:6:USBPD_PHY_FastRoleSwapSignalling	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:284:6:USBPD_PHY_EnableRX	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:294:6:USBPD_PHY_DisableRX	1
+../Middlewares/ST/STM32_USBPD_Library/Devices/STM32G0XX/src/usbpd_phy.c:314:6:PHY_Rx_Completed	6

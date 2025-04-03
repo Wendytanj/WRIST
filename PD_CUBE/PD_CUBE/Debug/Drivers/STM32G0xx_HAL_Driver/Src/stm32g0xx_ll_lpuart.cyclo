@@ -1,0 +1,10 @@
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_lpuart.h:525:26:LL_LPUART_IsEnabled	2
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_lpuart.h:917:22:LL_LPUART_SetPrescaler	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_lpuart.h:954:22:LL_LPUART_SetStopBitsLength	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_lpuart.h:1258:22:LL_LPUART_SetHWFlowCtrl	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_lpuart.h:1370:22:LL_LPUART_SetBaudRate	2
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_bus.h:676:22:LL_APB1_GRP1_ForceReset	1
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_ll_bus.h:742:22:LL_APB1_GRP1_ReleaseReset	1
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_ll_lpuart.c:132:13:LL_LPUART_DeInit	3
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_ll_lpuart.c:180:13:LL_LPUART_Init	6
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_ll_lpuart.c:284:6:LL_LPUART_StructInit	1
