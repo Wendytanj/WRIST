@@ -1,7 +1,16 @@
 // DRV7781 Motor Driver Control 
 
-#define IN1 PA14 //D6  
-#define IN2 PA4 //D5
+#define IN1 D6 //PA14  
+#define IN2 D5 //PA4
+#define PULSES_PER_REV 784  
+
+volatile long encoderPos = 0;
+
+const int encoderPinA = 2;
+const int encoderPinB = 3;
+
+int AMP = 70;
+float targetAngle = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -12,7 +21,7 @@ void setup() {
 }
 
 void loop() {
-  int AMP = 70; //range (50-255) for noticable motor spin
+  int AMP = 200; //range (50-255) for noticable motor spin
   
   analogWrite(IN1, AMP); 
   analogWrite(IN2, 0);

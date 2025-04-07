@@ -16,8 +16,8 @@ void loop(void) {
  
   // analog voltage reading ranges from about 0 to 1023 which maps to 0V to 5V (= 5000mV)
   fsrVoltage = map(fsrReading, 0, 1023, 0, 5000);
-  //Serial.print("Voltage reading in mV = ");
-  //Serial.println(fsrVoltage);  
+  Serial.print("Voltage reading in mV = ");
+  Serial.println(fsrVoltage);  
  
   if (fsrVoltage == 0) {
     Serial.println("No pressure");  
