@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
-SERIAL_PORT = 'COM9'  
+SERIAL_PORT = 'COM15'  
 BAUD_RATE = 115200
 
 class MotorControlUI(QWidget):
@@ -86,10 +86,10 @@ class MotorControlUI(QWidget):
         self.speed_label.setText(f"Speed: {value}")
         
     def start_cw(self):
-        self.send_command("R\n")
+        self.send_command("L\n")
 
     def start_ccw(self):
-        self.send_command("L\n")
+        self.send_command("R\n")
 
     def start_turn_cw(self, angle):
         # Command "A" followed by the angle and newline
