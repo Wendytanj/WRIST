@@ -195,8 +195,8 @@ void parseCCommand(String cmd) {
     }
   }
   unsigned long diff = millis() - startTime;
-  Serial.print("DONE ");
-  Serial.println(diff);
+  // Serial.print("DONE ");
+  //Serial.println(diff);
 }
 
 void setup() {
@@ -207,7 +207,10 @@ void setup() {
   // Pre-initialize all drivers.
   initDrivers();
   
-  Serial.println("Ready. Waiting for commands...");
+  hapDrive48.enableAcceleration(false);
+  hapDrive49.enableAcceleration(false);
+  hapDrive4A.enableAcceleration(false);
+
   delay(500);
 }
 

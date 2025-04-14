@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 
 class VibrationGUI(QWidget):
-    def __init__(self, port='COM7', baud=115200):
+    def __init__(self, port='COM8', baud=115200):
         super().__init__()
         self.setWindowTitle("DA7281 Vibration Control")
 
@@ -95,7 +95,7 @@ class VibrationGUI(QWidget):
     # ---------------------------
     # Waveform Generators
     # ---------------------------
-    def generateExpDecay(self, length=20):
+    def generateExpDecay(self, length):
         samples = []
         tau = length / 3.0
         for i in range(length):
@@ -103,14 +103,14 @@ class VibrationGUI(QWidget):
             samples.append(amp)
         return samples
     
-    def generateSquareWave(self, length=16):
+    def generateSquareWave(self, length):
         samples = []
         half = length // 2
         for i in range(length):
             samples.append(0 if i < half else 255)
         return samples
     
-    def generateSawWave(self, length=16):
+    def generateSawWave(self, length):
         samples = []
         for i in range(length):
             val = int((i / (length - 1)) * 255)
@@ -121,15 +121,15 @@ class VibrationGUI(QWidget):
     # Waveform Commands
     # ---------------------------
     def onExpDecayBuzz(self):
-        sampleCount = 20
+        sampleCount = 50
         timeStep = 10
         samples = self.generateExpDecay(sampleCount)
         self.sendWaveCommand(sampleCount, timeStep, samples)
 
     def onShortBuzz(self):
-        sampleCount = 1
+        sampleCount = 3
         timeStep = 20
-        samples = [0xFF]
+        samples = [0x7F,0x7F,0x7F]
         self.sendWaveCommand(sampleCount, timeStep, samples)
 
     def onSquareBuzz(self):
@@ -220,7 +220,7 @@ class VibrationGUI(QWidget):
 
 def main():
     app = QApplication(sys.argv)
-    gui = VibrationGUI(port='COM7', baud=115200)
+    gui = VibrationGUI(port='COM8', baud=115200)
     gui.show()
     sys.exit(app.exec_())
 
