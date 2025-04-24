@@ -201,48 +201,14 @@ class Haptic_Driver
     uint8_t getMask();
     bool setBemf(uint8_t val);
     float getBemf();
-    void clearIrq(uint8_t);
-    event_t getIrqEvent();
-    diag_status_t getEventDiag();
-    status_t getIrqStatus();
+    uint8_t getAccelState();
     hapticSettings sparkSettings;
 
   private:
     // Private Variables
     uint8_t _address;
-
-    // This generic function handles I2C write commands for modifying individual
-    // bits in an eight bit register. Paramaters include the register's address, a mask
-    // for bits that are ignored, the bits to write, and the bits' starting
-    // position.
     bool _writeRegister(uint8_t, uint8_t, uint8_t, uint8_t);
-
-    // Consecutive Write Mode: I2C_WR_MODE = 0
-    // Allows for n-number of writes on consecutive registers, beginning at the
-    // given register.
-    // This particular write does not care what is currently in the register and
-    // overwrites whatever is there.
-    bool _writeConsReg(uint8_t regs[], size_t);
-
-    // Non-Consecutive Write Mode: I2C_WR_MODE = 1
-    // Allows for n-number of writes on non-consecutive registers, beginning at the
-    // given register but able to jump locations by giving another address.
-    // This particular write does not care what is currently in the register and
-    // overwrites whatever is there.
-    bool _writeNonConsReg(uint8_t regs[], size_t);
-
-    // This generic function does a basic I-squared-C write transaction at the
-    // given address, and writes the given _command argument.
-    void _writeCommand(uint8_t);
-    // This generic function reads an eight bit register. It takes the register's
-    // address as its' parameter.
     uint8_t _readRegister(uint8_t);
-
-    bool _readConsReg(uint8_t regs[], size_t);
-    bool _readNonConsReg(uint8_t regs[], size_t);
-    // This generic function does a basic I-squared-C read transaction at the given
-    // addres, taking the number of reads as argument.
-    uint8_t _readCommand(uint8_t);
 
     TwoWire *_i2cPort;
 };

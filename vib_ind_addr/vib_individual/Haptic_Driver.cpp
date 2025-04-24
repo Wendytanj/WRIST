@@ -14,6 +14,7 @@
 Haptic_Driver::Haptic_Driver(uint8_t address)
 {
     _address = address;
+
 } // Constructor for I2C
 
 // Address: 0x00 , bit[7:0]: default value is 0xBA.
@@ -338,15 +339,38 @@ bool Haptic_Driver::calibrateImpedanceDistance(bool enable)
         return false;
 }
 
+uint8_t Haptic_Driver::getAccelState() {
+  // Read TOP_CFG1 and extract bit 2
+  uint8_t state = _readRegister(TOP_CFG1);
+  return (state & 0x04) >> 2;
+}
+
+
 // Address: 0x23, bit[7:0]
 // Applies the argument "wave" to the register that controls the strength of
 // the vibration. The function first checks if acceleration mode is enabled
 // which limits the maximum value that can be written to the register.
 bool Haptic_Driver::setVibrate(uint8_t val)
 {
-    if (val > 0xFF)
-        val = 0xFF; // Just limit the argument to the physical limit
+    // Remove the unnecessary check for val < 0 since uint8_t is always >= 0.
 
+    // Read the current configuration to check acceleration state.
+    uint8_t accelState = _readRegister(TOP_CFG1);
+    accelState = (accelState & 0x04) >> 2;
+    
+    // Clamp the amplitude based on the acceleration state.
+    if (accelState == ENABLE)
+    {
+        if (val > 0x7F)
+            val = 0x7F; // Limit for accelerated mode.
+    }
+    else
+    {
+        if (val > 0xFF)
+          val = 0xFF;
+    }
+    
+    // Write the clamped value to the vibration control register (TOP_CTL2 = 0x23).
     return _writeRegister(TOP_CTL2, 0x00, val, 0);
 }
 
@@ -416,99 +440,6 @@ float Haptic_Driver::getBemf()
     }
 }
 
-void Haptic_Driver::clearIrq(uint8_t irq)
-{
-    _writeRegister(IRQ_EVENT1, ~irq, irq, 0);
-}
-
-
-
-
-// Address: 0x03, bit[7:0]
-// This retrieves the interrupt value and returns the corresponding interrupt
-// found or success otherwise.
-event_t Haptic_Driver::getIrqEvent()
-{
-
-    uint8_t irqEvent = _readRegister(IRQ_EVENT1);
-
-    if (!irqEvent)
-        return HAPTIC_SUCCESS;
-
-    switch (irqEvent)
-    {
-    case E_SEQ_CONTINUE:
-        return E_SEQ_CONTINUE;
-    case E_UVLO:
-        return E_UVLO;
-    case E_SEQ_DONE:
-        return E_SEQ_DONE;
-    case E_OVERTEMP_CRIT:
-        return E_OVERTEMP_CRIT;
-    case E_SEQ_FAULT:
-        return E_SEQ_FAULT;
-    case E_WARNING:
-        return E_WARNING;
-    case E_ACTUATOR_FAULT:
-        return E_ACTUATOR_FAULT;
-    case E_OC_FAULT:
-        return E_OC_FAULT;
-    default:
-        return static_cast<event_t>(irqEvent); // In the case that there are more than one.
-    }
-}
-
-// Address: 0x05 , bit[7:5]
-// Given an interrupt corresponding to an error with using memory or pwm mode,
-// this returns further information on the error.
-diag_status_t Haptic_Driver::getEventDiag()
-{
-
-    uint8_t diag = _readRegister(IRQ_EVENT_SEQ_DIAG);
-
-    switch (diag)
-    {
-    case E_PWM_FAULT:
-        return E_PWM_FAULT;
-    case E_MEM_FAULT:
-        return E_MEM_FAULT;
-    case E_SEQ_ID_FAULT:
-        return E_SEQ_ID_FAULT;
-    default:
-        return NO_DIAG;
-    }
-}
-
-// Address: 0x06 , bit[7:0]
-// Retu
-status_t Haptic_Driver::getIrqStatus()
-{
-
-    uint8_t status = _readRegister(IRQ_STATUS1);
-
-    switch (status)
-    {
-    case STA_SEQ_CONTINUE:
-        return STA_SEQ_CONTINUE;
-    case STA_UVLO_VBAT_OK:
-        return STA_UVLO_VBAT_OK;
-    case STA_PAT_DONE:
-        return STA_PAT_DONE;
-    case STA_OVERTEMP_CRIT:
-        return STA_OVERTEMP_CRIT;
-    case STA_PAT_FAULT:
-        return STA_PAT_FAULT;
-    case STA_WARNING:
-        return STA_WARNING;
-    case STA_ACTUATOR:
-        return STA_ACTUATOR;
-    case STA_OC:
-        return STA_OC;
-    default:
-        return STATUS_NOM;
-    }
-}
-
 
 // This generic function handles I2C write commands for modifying individual
 // bits in an eight bit register. Paramaters include the register's address, a mask
@@ -545,49 +476,3 @@ uint8_t Haptic_Driver::_readRegister(uint8_t _reg)
     return _regValue;
 }
 
-// Consecutive Write Mode: I2C_WR_MODE = 0
-// Allows for n-number of writes on consecutive registers, beginning at the
-// given register.
-// This particular write does not care what is currently in the register and
-// overwrites whatever is there.
-bool Haptic_Driver::_writeConsReg(uint8_t regs[], size_t numWrites)
-{
-
-    _writeRegister(CIF_I2C1, 0x7F, 0, 7);
-
-    _i2cPort->beginTransmission(_address);
-
-    for (size_t i = 0; i <= numWrites; i++)
-    {
-        _i2cPort->write(regs[i]);
-    }
-
-    if (!_i2cPort->endTransmission())
-        return true;
-    else
-        return false;
-}
-
-// Non-Consecutive Write Mode: I2C_WR_MODE = 1
-// Allows for n-number of writes on non-consecutive registers, beginning at the
-// given register but able to jump locations by giving another address.
-// This particular write does not care what is currently in the register and
-// overwrites whatever is there.
-bool Haptic_Driver::_writeNonConsReg(uint8_t regs[], size_t numWrites)
-{
-
-    _writeRegister(CIF_I2C1, 0x7F, 1, 7);
-
-    _i2cPort->beginTransmission(_address); // Start communication.
-    for (size_t i = 0; i <= numWrites; i++)
-    {
-        // Here's to hoping that the register pointer will indeed jump locations as
-        // advertised.
-        _i2cPort->write(regs[i]);
-    }
-
-    if (!_i2cPort->endTransmission())
-        return true;
-    else
-        return false;
-}
