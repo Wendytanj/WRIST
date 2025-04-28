@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt
 
-SERIAL_PORT = 'COM9'
+SERIAL_PORT = 'COM10'
 BAUD_RATE = 115200
 
 # Styles for indicators
